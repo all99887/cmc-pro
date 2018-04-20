@@ -20,6 +20,7 @@ public class SysController {
         CmcModel cmcModel = new CmcModel();
         System.out.println(BCrypt.checkpw("1212", loginForm.getPassword()));
         return cmcModel;
+
     }
 
 }
