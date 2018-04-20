@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    druid:
+      url: jdbc:mysql://localhost:3306/cmcpro
+      username: java
+      password: java1234
+      driver-class-name: com.mysql.jdbc.Driver
+      db-type: com.alibaba.druid.pool.DruidDataSource
