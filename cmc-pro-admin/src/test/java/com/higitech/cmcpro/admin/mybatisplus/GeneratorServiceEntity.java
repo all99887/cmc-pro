@@ -50,7 +50,7 @@ public class GeneratorServiceEntity {
                         new PackageConfig()
                                 .setParent(packageName)
                                 .setController("controller")
-                                .setEntity("entity")
+                                .setEntity("model")
                 ).execute();
     }
 

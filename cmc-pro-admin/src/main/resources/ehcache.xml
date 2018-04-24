@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+         updateCheck="false">
+    <defaultCache
+            overflowToDisk="true"
+            diskPersistent="false"
+            maxElementsOnDisk="0"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="0"
+            memoryStoreEvictionPolicy="LRU" />
+
+    <!-- session 替代session 的缓存区，30分有效期-->
+    <cache
+            name="session"
+            overflowToDisk="true"
+            diskPersistent="false"
+            maxElementsOnDisk="0"
+            maxBytesLocalHeap="500m"
+            timeToIdleSeconds="1800"
+            timeToLiveSeconds="0"
+            memoryStoreEvictionPolicy="LRU" />
+</ehcache>

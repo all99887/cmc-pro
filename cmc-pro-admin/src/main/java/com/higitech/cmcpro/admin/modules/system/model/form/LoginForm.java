@@ -1,5 +1,6 @@
-package com.higitech.cmcpro.admin.modules.system.entity.form;
+package com.higitech.cmcpro.admin.modules.system.model.form;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,6 +13,7 @@ public class LoginForm implements Serializable{
 
     private String username;
 
+    @JSONField(serialize=false)
     private String password;
 
     private String captcha;

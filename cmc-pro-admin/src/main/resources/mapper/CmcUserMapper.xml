@@ -2,5 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.higitech.cmcpro.admin.modules.system.mapper.CmcUserMapper">
 
+    <select id="getUserPermission" resultType="com.higitech.cmcpro.admin.modules.system.entity.CmcFunc">
+        SELECT cmc_func.func_url_pre, cmc_func.func_id, cmc_func.func_name, cmc_func.func_index_url, cmc_func.p_id, cmc_func.order_num
+        FROM
+          cmc_user LEFT JOIN cmc_user_role_rel on (cmc_user.user_id = cmc_user_role_rel.user_id)
+          LEFT JOIN cmc_role on (cmc_user_role_rel.role_id = cmc_role.role_id)
+          LEFT JOIN cmc_role_func_rel on (cmc_user_role_rel.role_id = cmc_role_func_rel.role_id)
+          LEFT JOIN cmc_func on (cmc_role_func_rel.func_id = cmc_func.func_id)
+        where
+          cmc_user.user_id = #{userId}
+          and cmc_role.status=1
+          and cmc_func.status=1
+        order by
+          cmc_func.order_num
+    </select>
 
 </mapper>

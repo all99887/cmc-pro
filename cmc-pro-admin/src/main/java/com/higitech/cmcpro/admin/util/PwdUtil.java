@@ -28,4 +28,8 @@ public final class PwdUtil {
     public static boolean comparePwd(String pwd, String pwdDb){
         return BCrypt.checkpw(pwd, pwdDb);
     }
+
+    public static void main(String[] args) {
+        System.out.println(BCrypt.hashpw("fd004166c950fa50715419cc6fb091abbcbe8067dbb4b8292a4151c8894e6f3d", BCrypt.gensalt(10)));
+    }
 }

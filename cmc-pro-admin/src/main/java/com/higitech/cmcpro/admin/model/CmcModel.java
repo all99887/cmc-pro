@@ -32,7 +32,6 @@ public class CmcModel extends HashMap {
 
     public CmcModel(){
         set(SUCCESS, true);
-//        setViewName(DEFAULT_DATA_VIEWNAME);
     }
 
     /**

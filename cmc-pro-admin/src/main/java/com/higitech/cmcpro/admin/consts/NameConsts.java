@@ -11,6 +11,10 @@ public final class NameConsts {
 
     public final class SessionKeys{
         public static final String USER = "loginUser";
+
+        public static final String USER_PERMISSION = "userPermission";
+
+        public static final String PIC_CAPTCHA_KEY = "picCaptchaKey";
     }
 
 

@@ -2,6 +2,8 @@ package com.higitech.cmcpro.admin.modules.system.entity;
 
 import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.annotations.TableId;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +14,7 @@ import java.io.Serializable;
  * @author liuyanxiang
  * @since 2018-04-21
  */
+@Data
 public class CmcFunc implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,9 +34,15 @@ public class CmcFunc implements Serializable {
      */
     private String funcDesc;
     /**
-     * 功能类型 0：菜单 1：功能
+     * 功能url前缀，用于判断权限
      */
-    private Integer funcType;
+    private String funcUrlPre;
+
+    /**
+     * 入口url
+     */
+    private String funcIndexUrl;
+
     /**
      * 排序值
      */
@@ -43,73 +52,4 @@ public class CmcFunc implements Serializable {
      */
     private Integer status;
 
-
-    public Long getFuncId() {
-        return funcId;
-    }
-
-    public void setFuncId(Long funcId) {
-        this.funcId = funcId;
-    }
-
-    public Long getpId() {
-        return pId;
-    }
-
-    public void setpId(Long pId) {
-        this.pId = pId;
-    }
-
-    public String getFuncName() {
-        return funcName;
-    }
-
-    public void setFuncName(String funcName) {
-        this.funcName = funcName;
-    }
-
-    public String getFuncDesc() {
-        return funcDesc;
-    }
-
-    public void setFuncDesc(String funcDesc) {
-        this.funcDesc = funcDesc;
-    }
-
-    public Integer getFuncType() {
-        return funcType;
-    }
-
-    public void setFuncType(Integer funcType) {
-        this.funcType = funcType;
-    }
-
-    public Integer getOrderNum() {
-        return orderNum;
-    }
-
-    public void setOrderNum(Integer orderNum) {
-        this.orderNum = orderNum;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return "CmcFunc{" +
-        ", funcId=" + funcId +
-        ", pId=" + pId +
-        ", funcName=" + funcName +
-        ", funcDesc=" + funcDesc +
-        ", funcType=" + funcType +
-        ", orderNum=" + orderNum +
-        ", status=" + status +
-        "}";
-    }
 }
