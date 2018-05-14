@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.higitech.cmcpro.admin.consts.CodeConsts;
 import com.higitech.cmcpro.admin.modules.system.entity.CmcFunc;
+import com.higitech.cmcpro.admin.modules.system.entity.CmcRole;
 import com.higitech.cmcpro.admin.modules.system.entity.CmcUser;
 import com.higitech.cmcpro.admin.modules.system.mapper.CmcUserMapper;
 import com.higitech.cmcpro.admin.modules.system.service.ICmcFuncService;
@@ -12,6 +13,7 @@ import com.higitech.cmcpro.admin.modules.system.service.ICmcUserService;
 import com.higitech.cmcpro.admin.util.PwdUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,6 +27,7 @@ import java.util.List;
  * @since 2018-04-21
  */
 @Service
+@Transactional
 public class CmcUserServiceImpl extends ServiceImpl<CmcUserMapper, CmcUser> implements ICmcUserService {
 
     @Autowired
@@ -54,5 +57,15 @@ public class CmcUserServiceImpl extends ServiceImpl<CmcUserMapper, CmcUser> impl
         } else {
             return baseMapper.getUserPermission(userId);
         }
+    }
+
+    public List<CmcRole> getUserRoleRel(long userId){
+        return baseMapper.getUserRoleRel(userId);
+    }
+
+    @Override
+    public void setUserRoleRel(long userId, String[] roleIds) {
+        baseMapper.delUserRoleRel(userId);
+        baseMapper.addUserRoleRel(userId, roleIds);
     }
 }

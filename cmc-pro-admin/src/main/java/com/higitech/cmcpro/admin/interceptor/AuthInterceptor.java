@@ -46,12 +46,22 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
+
+
         String uri = request.getRequestURI();
         if(StrUtil.isNotEmpty(contextPath)){
             uri = StrUtil.subAfter(uri, contextPath, true);
         }
+
         if(uri.startsWith("/common/")){
             return true;
+        }
+
+        if(uri.startsWith("/cmcProAdmin/")){
+            response.setStatus(401);
+            response.setHeader("Access-Control-Expose-Headers", "auth-result");
+            response.setHeader("auth-result", "noPermission");
+            return false;
         }
 
         Set<String> urlPreSet = sessionCache.get(token, NameConsts.SessionKeys.USER_PERMISSION);

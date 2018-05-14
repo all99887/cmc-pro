@@ -15,10 +15,12 @@ import com.higitech.cmcpro.admin.modules.system.service.ICmcUserService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashSet;
@@ -43,7 +45,7 @@ public class SysController {
 
     @ApiOperation("web端用户登录")
     @PostMapping("/webLogin.do")
-    public CmcModel webLogin(@RequestBody LoginForm loginForm, HttpSession session){
+    public CmcModel webLogin(@Validated @RequestBody LoginForm loginForm, HttpSession session){
         String captchaReal = Objects.toString(session.getAttribute(NameConsts.SessionKeys.PIC_CAPTCHA_KEY), "");
         if(StrUtil.equals(captchaReal, loginForm.getCaptcha(), true)){
             return login(loginForm);
@@ -59,7 +61,7 @@ public class SysController {
         CmcModel cmcModel = new CmcModel();
         CmcUser cmcUser = cmcUserService.login(loginForm.getUsername(), loginForm.getPassword());
         if(cmcUser == null){
-            cmcModel.addError("用户名密码错误");
+            cmcModel.addError("用户名密码错误或用户已停用");
             return cmcModel;
         }
         List<CmcFunc> userPermissionList = cmcUserService.getUserPermission(cmcUser.getUserId());
@@ -82,8 +84,8 @@ public class SysController {
         return cmcModel;
     }
 
-    @ApiOperation("获取功能列表")
-    @PostMapping("/funcList")
+    @ApiOperation("获取菜单列表")
+    @PostMapping("/menuList")
     public CmcModel funcList(@RequestHeader("cmcProToken") String token){
         CmcModel cmcModel = new CmcModel();
         CmcUser cmcUser = sessionCache.get(token, NameConsts.SessionKeys.USER);

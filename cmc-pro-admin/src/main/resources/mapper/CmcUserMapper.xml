@@ -2,6 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.higitech.cmcpro.admin.modules.system.mapper.CmcUserMapper">
 
+    <insert id="addUserRoleRel">
+        INSERT INTO cmc_user_role_rel (user_id, role_id) VALUES
+        <foreach collection="roleIds" item="item" index="index" open="" close="" separator=",">
+            (#{userId}, #{item})
+        </foreach>
+    </insert>
+
+    <delete id="delUserRoleRel">
+        DELETE FROM cmc_user_role_rel WHERE user_id = #{userId}
+    </delete>
+
     <select id="getUserPermission" resultType="com.higitech.cmcpro.admin.modules.system.entity.CmcFunc">
         SELECT cmc_func.func_url_pre, cmc_func.func_id, cmc_func.func_name, cmc_func.func_index_url, cmc_func.p_id, cmc_func.order_num
         FROM
@@ -15,6 +26,15 @@
           and cmc_func.status=1
         order by
           cmc_func.order_num
+    </select>
+
+    <select id="getUserRoleRel" resultType="com.higitech.cmcpro.admin.modules.system.entity.CmcRole">
+        SELECT cmc_role.role_id, role_name
+        FROM
+          cmc_user_role_rel LEFT JOIN cmc_role on (cmc_user_role_rel.role_id = cmc_role.role_id)
+        where
+          cmc_user_role_rel.user_id = #{userId}
+          and cmc_role.status=1
     </select>
 
 </mapper>

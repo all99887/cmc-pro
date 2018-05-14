@@ -1,5 +1,7 @@
 package com.higitech.cmcpro.admin.util;
 
+import cn.hutool.crypto.digest.DigestAlgorithm;
+import cn.hutool.crypto.digest.Digester;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
@@ -8,6 +10,17 @@ import org.mindrot.jbcrypt.BCrypt;
 public final class PwdUtil {
     private PwdUtil() throws Exception {
         throw new Exception("这玩意不用实例化");
+    }
+
+    /**
+     * 返回系统默认的密码
+     * @return
+     */
+    public static String genDefaultPwd(){
+        Digester md5 = new Digester(DigestAlgorithm.SHA256);
+        String digestHex = md5.digestHex("123456higitech");
+        digestHex = pwdHash(digestHex);
+        return digestHex;
     }
 
     /**
