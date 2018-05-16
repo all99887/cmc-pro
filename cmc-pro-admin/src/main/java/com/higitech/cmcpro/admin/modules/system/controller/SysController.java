@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -77,27 +78,9 @@ public class SysController {
         return cmcModel;
     }
 
-    @ApiOperation("用于前台请求一下查看token是否过期")
-    @PostMapping("/loginStatus")
-    public CmcModel loginStatus(){
-        CmcModel cmcModel = new CmcModel();
-        return cmcModel;
-    }
-
-    @ApiOperation("获取菜单列表")
-    @PostMapping("/menuList")
-    public CmcModel funcList(@RequestHeader("cmcProToken") String token){
-        CmcModel cmcModel = new CmcModel();
-        CmcUser cmcUser = sessionCache.get(token, NameConsts.SessionKeys.USER);
-        List<CmcFunc> userPermissionList = cmcUserService.getUserPermission(cmcUser.getUserId());
-        cmcModel.set("funcList", userPermissionList);
-        cmcModel.set("sysAdminOn", cmcUser.getUserId() == 1);
-        return cmcModel;
-    }
-
     @ApiOperation("web端获取图形验证码")
     @PostMapping("/webPicCaptcha.do")
-    public CmcModel webPicCaptcha(HttpSession session, HttpServletResponse response) {
+    public CmcModel webPicCaptcha(HttpSession session) {
         CmcModel cmcModel = new CmcModel();
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             String certCode = picCaptchaComponent.outputVerifyImage(80, 36, baos, 4);

@@ -25,7 +25,7 @@ public class RoleForm implements Serializable {
 
     private Integer status;
 
-    public CmcRole toCmcRole(){
+    public CmcRole toDbEntity(){
         CmcRole cmcRole = new CmcRole();
         cmcRole.setRoleDesc(roleDesc);
         cmcRole.setRoleId(roleId);

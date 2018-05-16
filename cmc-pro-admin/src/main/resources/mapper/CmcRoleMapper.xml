@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.higitech.cmcpro.admin.modules.system.mapper.CmcRoleMapper">
+    <insert id="addRoleFuncRel">
+        INSERT INTO cmc_role_func_rel (role_id, func_id) VALUES
+        <foreach collection="funcIds" item="item" index="index" open="" close="" separator=",">
+            (#{roleId}, #{item})
+        </foreach>
+    </insert>
 
 
+    <delete id="delRoleFuncRel">
+        DELETE FROM cmc_role_func_rel WHERE role_id = #{roleId}
+    </delete>
+
+
+    <select id="getRoleFuncRel" resultType="com.higitech.cmcpro.admin.modules.system.entity.CmcFunc">
+
+        SELECT cmc_func.func_url_pre, cmc_func.func_id, cmc_func.func_name, cmc_func.func_index_url, cmc_func.p_id, cmc_func.order_num
+        FROM
+          cmc_role_func_rel
+          LEFT JOIN cmc_func on (cmc_role_func_rel.func_id = cmc_func.func_id)
+        where
+          cmc_role_func_rel.role_id = #{roleId}
+          and cmc_func.status=1
+        order by
+          cmc_func.order_num
+    </select>
 </mapper>

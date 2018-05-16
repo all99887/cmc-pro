@@ -42,7 +42,7 @@ public class FuncForm implements Serializable {
     @Max(9)
     private Integer status;
 
-    public CmcFunc toCmcFunc(){
+    public CmcFunc toDbEntity(){
         CmcFunc cmcFunc = new CmcFunc();
         cmcFunc.setFuncId(funcId);
         cmcFunc.setStatus(status);

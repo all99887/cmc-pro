@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@Api("系统功能管理api")
+@Api("系统功能管理api（用户，角色，功能）")
 @RequestMapping("/cmcProAdmin/")
 public class AdminController {
 
@@ -45,23 +45,23 @@ public class AdminController {
 
     @ApiOperation("系统功能添加")
     @PostMapping("/func/add")
-    public CmcModel funcAdd(@Validated @RequestBody FuncForm funcForm){
+    public CmcModel funcAdd(@Validated @RequestBody FuncForm funcForm) {
         CmcModel cmcModel = new CmcModel();
-        cmcFuncService.insert(funcForm.toCmcFunc());
+        cmcFuncService.insert(funcForm.toDbEntity());
         return cmcModel;
     }
 
     @ApiOperation("系统功能编辑")
     @PostMapping("/func/edit")
-    public CmcModel funcEdit(@Validated @RequestBody FuncForm funcForm){
+    public CmcModel funcEdit(@Validated @RequestBody FuncForm funcForm) {
         CmcModel cmcModel = new CmcModel();
-        cmcFuncService.updateById(funcForm.toCmcFunc());
+        cmcFuncService.updateById(funcForm.toDbEntity());
         return cmcModel;
     }
 
     @ApiOperation("系统功能删除")
     @PostMapping("/func/del")
-    public CmcModel funcDel(@RequestBody RequestModel requestModel){
+    public CmcModel funcDel(@RequestBody RequestModel requestModel) {
         CmcModel cmcModel = new CmcModel();
         cmcFuncService.deleteById(requestModel.getLong("funcId"));
         return cmcModel;
@@ -69,7 +69,7 @@ public class AdminController {
 
     @ApiOperation("角色列表获取")
     @PostMapping("/role/list")
-    public CmcModel roleList(@RequestBody RequestModel requestModel){
+    public CmcModel roleList(@RequestBody RequestModel requestModel) {
         CmcModel cmcModel = new CmcModel();
         Page<CmcRole> cmcRolePage = new Page<>(requestModel.getPageIndex(), requestModel.getPageSize());
         cmcModel.setPage(cmcRoleService.selectPage(cmcRolePage));
@@ -78,46 +78,68 @@ public class AdminController {
 
     @ApiOperation("角色添加")
     @PostMapping("/role/add")
-    public CmcModel roleAdd(@Validated @RequestBody RoleForm roleForm){
+    public CmcModel roleAdd(@Validated @RequestBody RoleForm roleForm) {
         CmcModel cmcModel = new CmcModel();
         CmcRole query = new CmcRole();
         query.setRoleName(roleForm.getRoleName());
-        if(cmcRoleService.selectOne(new EntityWrapper<>(query)) != null){
+        if (cmcRoleService.selectOne(new EntityWrapper<>(query)) != null) {
             cmcModel.addError("该角色已存在");
             return cmcModel;
         }
-        cmcRoleService.insert(roleForm.toCmcRole());
+        cmcRoleService.insert(roleForm.toDbEntity());
         return cmcModel;
     }
 
     @ApiOperation("角色编辑")
     @PostMapping("/role/edit")
-    public CmcModel roleEdit(@Validated @RequestBody RoleForm roleForm){
+    public CmcModel roleEdit(@Validated @RequestBody RoleForm roleForm) {
         CmcModel cmcModel = new CmcModel();
         CmcRole query = new CmcRole();
         query.setRoleName(roleForm.getRoleName());
         CmcRole cmcRoleDb = cmcRoleService.selectOne(new EntityWrapper<>(query));
-        if(cmcRoleDb != null && cmcRoleDb.getRoleId() != roleForm.getRoleId()){
+        if (cmcRoleDb != null && cmcRoleDb.getRoleId() != roleForm.getRoleId()) {
             cmcModel.addError("该角色已存在");
             return cmcModel;
         }
-        cmcRoleService.updateById(roleForm.toCmcRole());
+        cmcRoleService.updateById(roleForm.toDbEntity());
         return cmcModel;
     }
 
     @ApiOperation("角色删除")
     @PostMapping("/role/del")
-    public CmcModel roleDel(@RequestBody RequestModel requestModel){
+    public CmcModel roleDel(@RequestBody RequestModel requestModel) {
         CmcModel cmcModel = new CmcModel();
-        String idStrs =  requestModel.getString("ids");
+        String idStrs = requestModel.getString("ids");
         String[] ids = idStrs.split(",");
         cmcRoleService.deleteBatchIds(CollUtil.newArrayList(ids));
         return cmcModel;
     }
 
+    @ApiOperation("角色功能授权列表")
+    @PostMapping("/role/funcRel/list")
+    public CmcModel funcRelList(@RequestBody RequestModel requestModel) {
+        CmcModel cmcModel = new CmcModel();
+        long roleId = requestModel.getLong("roleId");
+        List<CmcFunc> roleFuncList = cmcRoleService.getRoleFuncRel(roleId);
+        List<CmcFunc> allFuncList = cmcUserService.getUserPermission(1);
+        cmcModel.set("roleFuncList", roleFuncList);
+        cmcModel.set("allFuncList", allFuncList);
+        return cmcModel;
+    }
+
+    @ApiOperation("角色功能授权修改")
+    @PostMapping("/role/funcRel/edit")
+    public CmcModel funcRelEdit(@RequestBody RequestModel requestModel) {
+        CmcModel cmcModel = new CmcModel();
+        long roleId = requestModel.getLong("roleId");
+        String funcIds = requestModel.getString("funcIds");
+        cmcRoleService.setRoleFuncRel(roleId, funcIds.split(","));
+        return cmcModel;
+    }
+
     @ApiOperation("用户列表获取")
     @PostMapping("/user/list")
-    public CmcModel userList(@RequestBody RequestModel requestModel){
+    public CmcModel userList(@RequestBody RequestModel requestModel) {
         CmcModel cmcModel = new CmcModel();
         Page<CmcUser> cmcRolePage = new Page<>(requestModel.getPageIndex(), requestModel.getPageSize());
         EntityWrapper<CmcUser> ew = new EntityWrapper();
@@ -128,16 +150,16 @@ public class AdminController {
 
     @ApiOperation("用户添加")
     @PostMapping("/user/add")
-    public CmcModel userAdd(@Validated @RequestBody UserForm userForm){
+    public CmcModel userAdd(@Validated @RequestBody UserForm userForm) {
         CmcModel cmcModel = new CmcModel();
         CmcUser query = new CmcUser();
         query.setUserName(userForm.getUserName());
-        if(cmcUserService.selectOne(new EntityWrapper<>(query)) != null){
+        if (cmcUserService.selectOne(new EntityWrapper<>(query)) != null) {
             cmcModel.addError("该用户名已存在");
             return cmcModel;
         }
 
-        CmcUser cmcUserDb = userForm.toCmcUser();
+        CmcUser cmcUserDb = userForm.toDbEntity();
         Date now = new Date();
         cmcUserDb.setCreateTime(now);
         cmcUserDb.setLastLoginTime(now);
@@ -148,21 +170,21 @@ public class AdminController {
 
     @ApiOperation("用户编辑")
     @PostMapping("/user/edit")
-    public CmcModel userEdit(@Validated @RequestBody UserForm userForm){
+    public CmcModel userEdit(@Validated @RequestBody UserForm userForm) {
         CmcModel cmcModel = new CmcModel();
-        if(userForm.getUserId() == 1){
+        if (userForm.getUserId() == 1) {
             cmcModel.addError("不能编辑超级管理员");
             return cmcModel;
         }
         CmcUser query = new CmcUser();
         query.setUserName(userForm.getUserName());
         CmcUser cmcUserDb = cmcUserService.selectOne(new EntityWrapper<>(query));
-        if(cmcUserDb != null && cmcUserDb.getUserId() != userForm.getUserId()){
+        if (cmcUserDb != null && cmcUserDb.getUserId() != userForm.getUserId()) {
             cmcModel.addError("该用户名已存在");
             return cmcModel;
         }
 
-        CmcUser cmcUserNew = userForm.toCmcUser();
+        CmcUser cmcUserNew = userForm.toDbEntity();
         //下面这些不允许编辑，取目前db中的值覆盖
         cmcUserNew.setUserName(cmcUserDb.getUserName());
         cmcUserNew.setPassword(cmcUserDb.getPassword());
@@ -175,9 +197,9 @@ public class AdminController {
 
     @ApiOperation("用户删除")
     @PostMapping("/user/del")
-    public CmcModel userDel(@RequestBody RequestModel requestModel){
+    public CmcModel userDel(@RequestBody RequestModel requestModel) {
         CmcModel cmcModel = new CmcModel();
-        String idStrs =  requestModel.getString("ids");
+        String idStrs = requestModel.getString("ids");
         String[] ids = idStrs.split(",");
 
         ArrayList<String> idList = CollUtil.newArrayList(ids);
@@ -189,10 +211,10 @@ public class AdminController {
 
     @ApiOperation("用户角色关系获取")
     @PostMapping("/user/roleRel/list")
-    public CmcModel roleRelList(@RequestBody RequestModel requestModel){
+    public CmcModel roleRelList(@RequestBody RequestModel requestModel) {
         CmcModel cmcModel = new CmcModel();
-        long userId =  requestModel.getLong("userId");
-        if(userId == 1){
+        long userId = requestModel.getLong("userId");
+        if (userId == 1) {
             cmcModel.addError("该功能不支持超级管理员");
             return cmcModel;
         }
@@ -206,13 +228,15 @@ public class AdminController {
         return cmcModel;
     }
 
-    @ApiOperation("用户角色关系获取")
+    @ApiOperation("用户角色关系修改")
     @PostMapping("/user/roleRel/edit")
-    public CmcModel roleRelEdit(@RequestBody RequestModel requestModel){
+    public CmcModel roleRelEdit(@RequestBody RequestModel requestModel) {
         CmcModel cmcModel = new CmcModel();
         long userId = requestModel.getLong("userId");
         String roleIds = requestModel.getString("roleIds");
         cmcUserService.setUserRoleRel(userId, roleIds.split(","));
         return cmcModel;
     }
+
+
 }

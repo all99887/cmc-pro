@@ -39,7 +39,7 @@ public class UserForm implements Serializable{
      */
     private Integer status;
 
-    public CmcUser toCmcUser(){
+    public CmcUser toDbEntity(){
         CmcUser cmcUser = new CmcUser();
         cmcUser.setEmail(this.email);
         cmcUser.setMobile(this.mobile);

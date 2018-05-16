@@ -1,3 +1,4 @@
+
 spring:
   datasource:
     druid:
@@ -34,3 +35,6 @@ mybatis-plus:
     #配置返回数据库(column下划线命名&&返回java实体是驼峰命名)，自动匹配无需as（没开启这个，SQL需要写as： select user_id as userId）
     map-underscore-to-camel-case: true
     cache-enabled: false
+logging:
+  level:
+    root: debug
