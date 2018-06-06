@@ -46,8 +46,6 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
-
-
         String uri = request.getRequestURI();
         if(StrUtil.isNotEmpty(contextPath)){
             uri = StrUtil.subAfter(uri, contextPath, true);

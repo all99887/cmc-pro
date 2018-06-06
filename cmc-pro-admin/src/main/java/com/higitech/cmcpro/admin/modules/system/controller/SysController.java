@@ -4,11 +4,16 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.servlet.ServletUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.higitech.cmcpro.admin.cache.SessionCache;
 import com.higitech.cmcpro.admin.component.PicCaptchaComponent;
+import com.higitech.cmcpro.admin.component.WebLogComponent;
 import com.higitech.cmcpro.admin.consts.NameConsts;
 import com.higitech.cmcpro.admin.model.CmcModel;
 import com.higitech.cmcpro.admin.modules.system.entity.CmcFunc;
+import com.higitech.cmcpro.admin.modules.system.entity.CmcLog;
 import com.higitech.cmcpro.admin.modules.system.entity.CmcUser;
 import com.higitech.cmcpro.admin.modules.system.model.form.LoginForm;
 import com.higitech.cmcpro.admin.modules.system.service.ICmcUserService;
@@ -24,10 +29,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/system")
@@ -44,12 +46,34 @@ public class SysController {
     @Autowired
     private PicCaptchaComponent picCaptchaComponent;
 
+    @Autowired
+    private WebLogComponent webLogComponent;
+
     @ApiOperation("web端用户登录")
     @PostMapping("/webLogin.do")
-    public CmcModel webLogin(@Validated @RequestBody LoginForm loginForm, HttpSession session){
+    public CmcModel webLogin(@Validated @RequestBody LoginForm loginForm, HttpSession session, HttpServletRequest request){
         String captchaReal = Objects.toString(session.getAttribute(NameConsts.SessionKeys.PIC_CAPTCHA_KEY), "");
         if(StrUtil.equals(captchaReal, loginForm.getCaptcha(), true)){
-            return login(loginForm);
+            CmcModel cmcModel = login(loginForm);
+            if(cmcModel.isSuccess()){
+                String token = Objects.toString(cmcModel.get("token"), "");
+                CmcUser cmcUser = sessionCache.get(token, NameConsts.SessionKeys.USER);
+
+                CmcLog cmcLog = new CmcLog();
+                cmcLog.setOperateTime(new Date());
+                JSONObject params = JSON.parseObject(JSON.toJSONString(loginForm));
+                params.remove("password");
+                cmcLog.setParams(params.toJSONString());
+                cmcLog.setUrl("/system/webLogin.do");
+                cmcLog.setOperatorRealName(cmcUser.getRealName());
+                cmcLog.setOperatorIp(ServletUtil.getClientIP(request));
+                cmcLog.setOperatorId(cmcUser.getUserId());
+                JSONObject returnResult = JSON.parseObject(JSON.toJSONString(cmcModel));
+                returnResult.remove("token");
+                cmcLog.setReturnResult(JSON.toJSONString(returnResult));
+                webLogComponent.pushLog(cmcLog);
+            }
+            return cmcModel;
         }
         CmcModel cmcModel = new CmcModel();
         cmcModel.addError("验证码错误");

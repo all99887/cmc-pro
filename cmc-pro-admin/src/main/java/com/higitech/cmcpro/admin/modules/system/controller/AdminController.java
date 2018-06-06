@@ -7,12 +7,14 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.higitech.cmcpro.admin.model.CmcModel;
 import com.higitech.cmcpro.admin.model.RequestModel;
 import com.higitech.cmcpro.admin.modules.system.entity.CmcFunc;
+import com.higitech.cmcpro.admin.modules.system.entity.CmcLog;
 import com.higitech.cmcpro.admin.modules.system.entity.CmcRole;
 import com.higitech.cmcpro.admin.modules.system.entity.CmcUser;
 import com.higitech.cmcpro.admin.modules.system.model.form.FuncForm;
 import com.higitech.cmcpro.admin.modules.system.model.form.RoleForm;
 import com.higitech.cmcpro.admin.modules.system.model.form.UserForm;
 import com.higitech.cmcpro.admin.modules.system.service.ICmcFuncService;
+import com.higitech.cmcpro.admin.modules.system.service.ICmcLogService;
 import com.higitech.cmcpro.admin.modules.system.service.ICmcRoleService;
 import com.higitech.cmcpro.admin.modules.system.service.ICmcUserService;
 import com.higitech.cmcpro.admin.util.PwdUtil;
@@ -43,6 +45,10 @@ public class AdminController {
     @Autowired
     private ICmcUserService cmcUserService;
 
+    @Autowired
+    private ICmcLogService cmcLogService;
+
+
     @ApiOperation("系统功能添加")
     @PostMapping("/func/add")
     public CmcModel funcAdd(@Validated @RequestBody FuncForm funcForm) {
@@ -71,8 +77,11 @@ public class AdminController {
     @PostMapping("/role/list")
     public CmcModel roleList(@RequestBody RequestModel requestModel) {
         CmcModel cmcModel = new CmcModel();
+        String roleName = requestModel.getString("roleName");
         Page<CmcRole> cmcRolePage = new Page<>(requestModel.getPageIndex(), requestModel.getPageSize());
-        cmcModel.setPage(cmcRoleService.selectPage(cmcRolePage));
+        Wrapper<CmcRole> wrapper = new EntityWrapper<>();
+        wrapper.like("role_name", roleName);
+        cmcModel.setPage(cmcRoleService.selectPage(cmcRolePage, wrapper));
         return cmcModel;
     }
 
@@ -141,9 +150,17 @@ public class AdminController {
     @PostMapping("/user/list")
     public CmcModel userList(@RequestBody RequestModel requestModel) {
         CmcModel cmcModel = new CmcModel();
+        String userName = requestModel.getString("userName");
+        String realName = requestModel.getString("realName");
+        String email = requestModel.getString("email");
+        String mobile = requestModel.getString("mobile");
         Page<CmcUser> cmcRolePage = new Page<>(requestModel.getPageIndex(), requestModel.getPageSize());
         EntityWrapper<CmcUser> ew = new EntityWrapper();
         ew.ne("user_id", 1);
+        ew.like("real_name", realName);
+        ew.like("user_name", userName);
+        ew.like("email", email);
+        ew.like("mobile", mobile);
         cmcModel.setPage(cmcUserService.selectPage(cmcRolePage, ew));
         return cmcModel;
     }
@@ -238,5 +255,25 @@ public class AdminController {
         return cmcModel;
     }
 
+    @ApiOperation("获取cmc系统日志")
+    @PostMapping("/log/list")
+    public CmcModel logList(@RequestBody RequestModel requestModel) {
+        CmcModel cmcModel = new CmcModel();
+        String operatorRealName = requestModel.getString("operatorRealName");
+        String operatorIp = requestModel.getString("operatorIp");
+        String url = requestModel.getString("url");
+        Long startTime = requestModel.getLong("startTime");
+        Long endTime = requestModel.getLong("endTime");
+        Page<CmcLog> cmcLogPage = new Page<>(requestModel.getPageIndex(), requestModel.getPageSize());
+        EntityWrapper<CmcLog> ew = new EntityWrapper();
+        ew.like("operator_real_name", operatorRealName);
+        ew.like("operator_ip", operatorIp);
+        ew.like("url", url);
+        if(startTime != null && endTime != null){
+            ew.between("operate_time", new Date(startTime), new Date(endTime));
+        }
+        cmcModel.setPage(cmcLogService.selectPage(cmcLogPage, ew));
+        return cmcModel;
+    }
 
 }

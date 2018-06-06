@@ -37,4 +37,4 @@ mybatis-plus:
     cache-enabled: false
 logging:
   level:
-    root: debug
+    root: info

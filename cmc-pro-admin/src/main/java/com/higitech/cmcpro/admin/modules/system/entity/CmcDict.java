@@ -10,10 +10,11 @@ import java.io.Serializable;
 public class CmcDict implements Serializable{
     private static final long serialVersionUID = -289145944954159834L;
 
-    @TableId(value = "dict_category_key", type = IdType.INPUT)
+    @TableId(value = "dict_id", type = IdType.AUTO)
+    private Long dictId;
+
     private String dictCategoryKey;
 
-    @TableId(value = "dict_key", type = IdType.INPUT)
     private String dictKey;
 
     private String dictValue;

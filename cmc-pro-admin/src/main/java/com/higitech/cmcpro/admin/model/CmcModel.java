@@ -64,4 +64,12 @@ public class CmcModel extends HashMap {
         return set(LIST, o);
     }
 
+    public boolean isSuccess(){
+        List list = (List)get(ERROR);
+        if(list == null) {
+            return true;
+        }
+        return list.isEmpty();
+    }
+
 }

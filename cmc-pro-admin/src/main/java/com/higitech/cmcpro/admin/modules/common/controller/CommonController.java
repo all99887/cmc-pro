@@ -5,6 +5,8 @@ import com.higitech.cmcpro.admin.consts.NameConsts;
 import com.higitech.cmcpro.admin.model.CmcModel;
 import com.higitech.cmcpro.admin.modules.system.entity.CmcFunc;
 import com.higitech.cmcpro.admin.modules.system.entity.CmcUser;
+import com.higitech.cmcpro.admin.modules.system.service.ICmcDictCategoryService;
+import com.higitech.cmcpro.admin.modules.system.service.ICmcDictService;
 import com.higitech.cmcpro.admin.modules.system.service.ICmcUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,6 +27,9 @@ public class CommonController {
     private ICmcUserService cmcUserService;
 
     @Autowired
+    private ICmcDictService cmcDictService;
+
+    @Autowired
     private SessionCache sessionCache;
 
     @ApiOperation("获取菜单列表")
@@ -42,6 +47,14 @@ public class CommonController {
     @PostMapping("/loginStatus")
     public CmcModel loginStatus(){
         CmcModel cmcModel = new CmcModel();
+        return cmcModel;
+    }
+
+    @ApiOperation("前台获取数据字典")
+    @PostMapping("/dictList.do")
+    public CmcModel dictList(){
+        CmcModel cmcModel = new CmcModel();
+        cmcModel.set("dict", cmcDictService.getAllDict());
         return cmcModel;
     }
 
