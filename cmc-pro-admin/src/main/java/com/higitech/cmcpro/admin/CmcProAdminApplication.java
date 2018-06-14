@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 
-@MapperScan(basePackages={"com.higitech.cmcpro.admin.modules.system.mapper"})
+@MapperScan(basePackages={"com.higitech.cmcpro.admin.modules.**.mapper"})
 @EnableCaching
 @SpringBootApplication
 public class CmcProAdminApplication {

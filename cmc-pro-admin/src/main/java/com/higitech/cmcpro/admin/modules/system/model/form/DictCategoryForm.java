@@ -1,7 +1,6 @@
 package com.higitech.cmcpro.admin.modules.system.model.form;
 
 import com.higitech.cmcpro.admin.modules.system.entity.CmcDictCategory;
-import com.higitech.cmcpro.admin.modules.system.entity.CmcFunc;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;

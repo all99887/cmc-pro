@@ -34,7 +34,7 @@ public class FuncForm implements Serializable {
     private String funcUrlPre;
 
     @Size(max = 32)
-    private String funcIndexUrl;
+    private String funcRouteName;
 
     @Max(999)
     private Integer orderNum;
@@ -47,7 +47,7 @@ public class FuncForm implements Serializable {
         cmcFunc.setFuncId(funcId);
         cmcFunc.setStatus(status);
         cmcFunc.setFuncDesc(funcDesc);
-        cmcFunc.setFuncIndexUrl(funcIndexUrl);
+        cmcFunc.setFuncRouteName(funcRouteName);
         cmcFunc.setFuncName(funcName);
         cmcFunc.setFuncUrlPre(funcUrlPre);
         cmcFunc.setOrderNum(orderNum);

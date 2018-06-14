@@ -39,9 +39,9 @@ public class CmcFunc implements Serializable {
     private String funcUrlPre;
 
     /**
-     * 入口url
+     * 入口路由名称
      */
-    private String funcIndexUrl;
+    private String funcRouteName;
 
     /**
      * 排序值
