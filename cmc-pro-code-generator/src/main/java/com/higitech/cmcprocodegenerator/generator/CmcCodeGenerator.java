@@ -39,7 +39,6 @@ public class CmcCodeGenerator {
             String baseClassPath = pathInfo.get(ConstVal.CONTROLLER_PATH);
             String formClassPath = StrUtil.subBefore(baseClassPath, File.separator, true) + File.separator + "model" + File.separator + "form" + File.separator + formClassName + ConstVal.JAVA_SUFFIX;
             String vuePath = StrUtil.subBefore(baseClassPath, File.separator, true) + File.separator + "vue" + File.separator + entityName + ".vue";
-            String finalXmlPath = StrUtil.subBefore(baseClassPath, File.separator, true) + File.separator + "xml" + File.separator + entityName + ".xml";
 
             objectMap.put("formClassPackage", formClassPackage);
             objectMap.put("formClassName", formClassName);
@@ -66,17 +65,6 @@ public class CmcCodeGenerator {
                     templateEngine.writer(objectMap, templateEngine.templateFilePath("/templates/frontView"), vuePath);
                 }
             }
-
-            //把xml文件挪出来
-//            // MpMapper.xml
-//            if (null != tableInfo.getXmlName() && null != pathInfo.get(ConstVal.XML_PATH)) {
-//                String xmlFile = String.format((pathInfo.get(ConstVal.XML_PATH) + File.separator + tableInfo.getXmlName() + ConstVal.XML_SUFFIX), entityName);
-//
-//                //                if (this.isCreate(xmlFile)) {
-////                    this.writer(objectMap, this.templateFilePath(template.getXml()), xmlFile);
-////                }
-//
-//            }
         }
     }
 
