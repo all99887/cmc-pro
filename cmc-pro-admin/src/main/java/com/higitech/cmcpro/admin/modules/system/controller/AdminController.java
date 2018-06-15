@@ -272,6 +272,7 @@ public class AdminController {
         if(startTime != null && endTime != null){
             ew.between("operate_time", new Date(startTime), new Date(endTime));
         }
+        ew.orderBy("operate_time", false);
         cmcModel.setPage(cmcLogService.selectPage(cmcLogPage, ew));
         return cmcModel;
     }

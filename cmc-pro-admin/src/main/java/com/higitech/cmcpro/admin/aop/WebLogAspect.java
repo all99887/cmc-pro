@@ -1,20 +1,19 @@
 package com.higitech.cmcpro.admin.aop;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Filter;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
-import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.higitech.cmcpro.admin.cache.SessionCache;
 import com.higitech.cmcpro.admin.component.WebLogComponent;
 import com.higitech.cmcpro.admin.consts.NameConsts;
 import com.higitech.cmcpro.admin.modules.system.entity.CmcLog;
 import com.higitech.cmcpro.admin.modules.system.entity.CmcUser;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +26,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 @Aspect
 @Component
@@ -54,7 +50,10 @@ public class WebLogAspect {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         Object[] args = pjp.getArgs();
-        Object[] argsFinal = ArrayUtil.filter(args, (Filter<Object>) kvEntry -> !(kvEntry instanceof ServletResponse || kvEntry instanceof HttpSession || kvEntry instanceof ServletRequest)
+        Object[] argsFinal = ArrayUtil.filter(args, (Filter<Object>) kvEntry -> !(kvEntry instanceof ServletResponse
+                || kvEntry instanceof HttpSession
+                || kvEntry instanceof ServletRequest
+                )
         );
 
         CmcLog cmcLog = new CmcLog();
