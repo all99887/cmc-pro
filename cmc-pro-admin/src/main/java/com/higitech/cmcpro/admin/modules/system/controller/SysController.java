@@ -15,18 +15,19 @@ import com.higitech.cmcpro.admin.model.CmcModel;
 import com.higitech.cmcpro.admin.modules.system.entity.CmcFunc;
 import com.higitech.cmcpro.admin.modules.system.entity.CmcLog;
 import com.higitech.cmcpro.admin.modules.system.entity.CmcUser;
+import com.higitech.cmcpro.admin.modules.system.model.form.ChangePwdForm;
 import com.higitech.cmcpro.admin.modules.system.model.form.LoginForm;
 import com.higitech.cmcpro.admin.modules.system.service.ICmcUserService;
-import io.swagger.annotations.*;
+import com.higitech.cmcpro.admin.util.PwdUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
@@ -124,6 +125,23 @@ public class SysController {
     public CmcModel logout(@RequestHeader("cmcProToken") String token) {
         CmcModel cmcModel = new CmcModel();
         sessionCache.invalidate(token);
+        return cmcModel;
+    }
+
+    @ApiOperation("修改密码")
+    @PostMapping("/changePwd")
+    public CmcModel changePwd(@Validated @RequestBody ChangePwdForm changePwdForm, @RequestHeader("cmcProToken") String token) {
+        CmcModel cmcModel = new CmcModel();
+        CmcUser cmcUser = sessionCache.get(token, NameConsts.SessionKeys.USER);
+        if(PwdUtil.comparePwd(changePwdForm.getOldPassword(), cmcUser.getPassword())){
+            // 修改密码
+            CmcUser updateUser = new CmcUser();
+            updateUser.setUserId(cmcUser.getUserId());
+            updateUser.setPassword(PwdUtil.pwdHash(changePwdForm.getPassword()));
+            cmcUserService.updateById(updateUser);
+        } else {
+            cmcModel.addError("原密码错误");
+        }
         return cmcModel;
     }
 
