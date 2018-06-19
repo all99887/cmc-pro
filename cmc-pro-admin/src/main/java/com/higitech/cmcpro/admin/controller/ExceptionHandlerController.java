@@ -16,7 +16,7 @@ public class ExceptionHandlerController {
     public CmcModel handleException(Exception e){
         CmcModel cmcModel = new CmcModel();
         log.error("后台错误", e);
-        cmcModel.addError("后台错误");
+        cmcModel.addError("common.error.common");
         return cmcModel;
     }
 
@@ -25,7 +25,7 @@ public class ExceptionHandlerController {
     public CmcModel handleException(MethodArgumentNotValidException  e){
         CmcModel cmcModel = new CmcModel();
         log.error("数据格式错误", e);
-        cmcModel.addError("数据格式错误");
+        cmcModel.addError("common.error.dataFormat");
         return cmcModel;
     }
 

@@ -77,7 +77,7 @@ public class SysController {
             return cmcModel;
         }
         CmcModel cmcModel = new CmcModel();
-        cmcModel.addError("验证码错误");
+        cmcModel.addError("common.error.captcha");
         return cmcModel;
     }
 
@@ -87,7 +87,7 @@ public class SysController {
         CmcModel cmcModel = new CmcModel();
         CmcUser cmcUser = cmcUserService.login(loginForm.getUsername(), loginForm.getPassword());
         if(cmcUser == null){
-            cmcModel.addError("用户名密码错误或用户已停用");
+            cmcModel.addError("common.error.login");
             return cmcModel;
         }
         List<CmcFunc> userPermissionList = cmcUserService.getUserPermission(cmcUser.getUserId());
@@ -140,7 +140,8 @@ public class SysController {
             updateUser.setPassword(PwdUtil.pwdHash(changePwdForm.getPassword()));
             cmcUserService.updateById(updateUser);
         } else {
-            cmcModel.addError("原密码错误");
+            //原密码错误
+            cmcModel.addError("common.error.oldPwd");
         }
         return cmcModel;
     }
