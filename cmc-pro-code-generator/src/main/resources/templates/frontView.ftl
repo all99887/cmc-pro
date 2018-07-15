@@ -2,7 +2,7 @@
     <div class="main-content-box">
         <el-row>
             <el-col :span="24">
-                <div class="content-box">
+                <div class="content-box" :style="{height: $store.getters.contentBoxHeight}">
                     <div class="button-box">
                         <el-row :gutter="20">
                             <el-col :span="17">
