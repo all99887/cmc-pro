@@ -9,7 +9,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.higitech.cmcpro.admin.cache.SessionCache;
 import com.higitech.cmcpro.admin.component.PicCaptchaComponent;
-import com.higitech.cmcpro.admin.component.WebLogComponent;
 import com.higitech.cmcpro.admin.consts.NameConsts;
 import com.higitech.cmcpro.admin.model.CmcModel;
 import com.higitech.cmcpro.admin.modules.system.entity.CmcFunc;
@@ -18,6 +17,8 @@ import com.higitech.cmcpro.admin.modules.system.entity.CmcUser;
 import com.higitech.cmcpro.admin.modules.system.model.form.ChangePwdForm;
 import com.higitech.cmcpro.admin.modules.system.model.form.LoginForm;
 import com.higitech.cmcpro.admin.modules.system.service.ICmcUserService;
+import com.higitech.cmcpro.admin.pubsub.impl.LogPubSub;
+import com.higitech.cmcpro.admin.pubsub.impl.LogPublisher;
 import com.higitech.cmcpro.admin.util.PwdUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -47,8 +48,14 @@ public class SysController {
     @Autowired
     private PicCaptchaComponent picCaptchaComponent;
 
+//    @Autowired
+//    private WebLogComponent webLogComponent;
+
     @Autowired
-    private WebLogComponent webLogComponent;
+    private LogPublisher logLogPublisher;
+
+    @Autowired
+    private LogPubSub logPubSub;
 
     @ApiOperation("web端用户登录")
     @PostMapping("/webLogin.do")
@@ -72,7 +79,8 @@ public class SysController {
                 JSONObject returnResult = JSON.parseObject(JSON.toJSONString(cmcModel));
                 returnResult.remove("token");
                 cmcLog.setReturnResult(JSON.toJSONString(returnResult));
-                webLogComponent.pushLog(cmcLog);
+                logLogPublisher.publish(logPubSub, cmcLog, false);
+//                webLogComponent.pushLog(cmcLog);
             }
             return cmcModel;
         }

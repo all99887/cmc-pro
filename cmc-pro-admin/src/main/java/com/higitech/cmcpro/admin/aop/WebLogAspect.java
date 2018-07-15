@@ -6,10 +6,11 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.alibaba.fastjson.JSON;
 import com.higitech.cmcpro.admin.cache.SessionCache;
-import com.higitech.cmcpro.admin.component.WebLogComponent;
 import com.higitech.cmcpro.admin.consts.NameConsts;
 import com.higitech.cmcpro.admin.modules.system.entity.CmcLog;
 import com.higitech.cmcpro.admin.modules.system.entity.CmcUser;
+import com.higitech.cmcpro.admin.pubsub.impl.LogPubSub;
+import com.higitech.cmcpro.admin.pubsub.impl.LogPublisher;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -33,8 +34,14 @@ public class WebLogAspect {
 
     @Autowired
     private SessionCache sessionCache;
+//    @Autowired
+//    private WebLogComponent webLogComponent;
+
     @Autowired
-    private WebLogComponent webLogComponent;
+    private LogPublisher logLogPublisher;
+
+    @Autowired
+    private LogPubSub logPubSub;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -76,7 +83,8 @@ public class WebLogAspect {
         cmcLog.setOperateTime(new Date());
         logger.debug("controllerLog before : {}", JSON.toJSONString(cmcLog));
         if(logFilter(uri)){
-            webLogComponent.pushLog(cmcLog);
+            logLogPublisher.publish(logPubSub, cmcLog, false);
+//            webLogComponent.pushLog(cmcLog);
         }
 
 

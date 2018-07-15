@@ -23,29 +23,29 @@ public class WebLogComponent {
 
     @PostConstruct
     public void init(){
-        Thread daemon = new Thread(() -> {
-            int count = 0;
-            while (true){
-                if(!queue.isEmpty()){
-                    CmcLog cmcLog = queue.remove();
-                    cmcLogMapper.insert(cmcLog);
-                }
-                count++;
-                int max = 100;
-                if(queue.size() > 1000){
-                    max = queue.size() / 10;
-                }
-                if(count % max == 0){
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    count = 0;
-                }
-            }
-        });
+//        Thread daemon = new Thread(() -> {
+//            int count = 0;
+//            while (true){
+//                if(!queue.isEmpty()){
+//                    CmcLog cmcLog = queue.remove();
+//                    cmcLogMapper.insert(cmcLog);
+//                }
+//                count++;
+//                int max = 100;
+//                if(queue.size() > 1000){
+//                    max = queue.size() / 10;
+//                }
+//                if(count % max == 0){
+//                    try {
+//                        Thread.sleep(100);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    count = 0;
+//                }
+//            }
+//        });
 //        daemon.setDaemon(true);
-        daemon.start();
+//        daemon.start();
     }
 }
